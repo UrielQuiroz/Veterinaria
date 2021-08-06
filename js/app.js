@@ -14,7 +14,16 @@ const contenedorCitas = document.querySelector("#citas");
 
 //Clases 
 class Citas {
+    
+    constructor() {
+        this.citas = [];
+    }
 
+    agragarCita(cita) {
+        this.citas = [ ...this.citas, cita ];
+        console.log(this.citas);
+    }
+    
 }
 
 class UI {
@@ -94,4 +103,27 @@ function nuevaCita(e) {
         ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
         return;
     }
+
+
+    //Generar un id unico
+    citaObj.id = Date.now();
+
+    //Creando una nueva cita
+    administrarCitas.agragarCita({ ...citaObj });
+
+    //Reiniciar objeto para la validacion
+    reinciarObj();
+
+    //Resetear el formulario
+    frm.reset();
+}
+
+
+function reinciarObj() {
+    citaObj.mascota = '';
+    citaObj.propietario = '';
+    citaObj.telefono = '';
+    citaObj.fecha = '';
+    citaObj.hora = '';
+    citaObj.sintomas = '';
 }
