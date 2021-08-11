@@ -53,15 +53,28 @@ export function nuevaCita(e) {
 
     if(editando){
         //console.log('Modo editando');
-        ui.imprimirAlerta('Actualizado correctamente');
 
         //Pasar el objeto de la cita a ediicion
         administrarCitas.editarCita({ ...citaObj })
 
-        frm.querySelector('button[type="submit"]').textContent = 'Crear cita';
+        //Editar en indexDB
+        const transaction = DB.transaction(['citas'], 'readwrite');
+        const objectStore = transaction.objectStore('citas');
 
-        //OCultar el modo edición
-        editando = false;
+        objectStore.put(citaObj);
+
+        transaction.oncomplete = () => {
+            ui.imprimirAlerta('Actualizado correctamente');
+            frm.querySelector('button[type="submit"]').textContent = 'Crear cita';
+    
+            //OCultar el modo edición
+            editando = false;
+        }
+
+        transaction.onerror = () => {
+            console.log('Hubo un error');
+        }
+
     }
     else {
         //console.log('Modo agregando');
