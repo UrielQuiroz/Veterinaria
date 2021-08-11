@@ -1,6 +1,6 @@
 
 
-import { cargarEdicion, DB } from '../funciones.js';
+import { eliminarCita, cargarEdicion, DB } from '../funciones.js';
 import { contenedorCitas } from '../selectores.js';
 
 

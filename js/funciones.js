@@ -5,13 +5,13 @@ import UI from './clases/UI.js';
 
 import {
 
-    mascotaInput, 
+    mascotaInput,
     propietarioInput,
     telefonoInput,
     fechaInput,
     horaInput,
     sintomasInput,
-    frm 
+    frm
 
 } from './selectores.js';
 
@@ -46,12 +46,12 @@ export function nuevaCita(e) {
     const { mascota, propietario, telefono, fecha, hora, sintomas } = citaObj;
 
     //Validar
-    if(mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintomas === '') {
+    if (mascota === '' || propietario === '' || telefono === '' || fecha === '' || hora === '' || sintomas === '') {
         ui.imprimirAlerta('Todos los campos son obligatorios', 'error');
         return;
     }
 
-    if(editando){
+    if (editando) {
         //console.log('Modo editando');
 
         //Pasar el objeto de la cita a ediicion
@@ -66,7 +66,7 @@ export function nuevaCita(e) {
         transaction.oncomplete = () => {
             ui.imprimirAlerta('Actualizado correctamente');
             frm.querySelector('button[type="submit"]').textContent = 'Crear cita';
-    
+
             //OCultar el modo edición
             editando = false;
         }
@@ -88,7 +88,7 @@ export function nuevaCita(e) {
         const objectStore = transaction.objectStore('citas');
         objectStore.add(citaObj);
 
-        transaction.oncomplete = function() {
+        transaction.oncomplete = function () {
             console.log('cita agregada correctamente')
             //Mensaje de agregado correctamente
             ui.imprimirAlerta('Se agrego correctamente');
@@ -117,15 +117,23 @@ export function reinciarObj() {
 
 
 export function eliminarCita(id) {
-    //console.log(id);
     //Eliminar la cita
-    administrarCitas.eliminarCita(id);
+    const transaction = DB.transaction(['citas'], 'readwrite');
+    const objectStore = transaction.objectStore('citas');
 
-    //Mostrar mensaje
-    ui.imprimirAlerta('La cita se eliminó correctamente');
+    objectStore.delete(id);
 
-    //Refrescar las citas
-    ui.imprimirCitas();
+    transaction.oncomplete = () => {
+        //Mostrar mensaje
+        ui.imprimirAlerta('La cita se eliminó correctamente');
+        //Refrescar las citas
+        ui.imprimirCitas();
+    }
+
+    transaction.onerror = () => {
+        console.log('Hubo un error');
+    }
+
 }
 
 export function cargarEdicion(cita) {
@@ -161,12 +169,12 @@ export function crearDB() {
     const crearDB = window.indexedDB.open('citas', 1);
 
     //Si hay un error
-    crearDB.onerror = function() {
+    crearDB.onerror = function () {
         console.log('Hubo un error');
     }
 
     //Si todo sale bien
-    crearDB.onsuccess = function() {
+    crearDB.onsuccess = function () {
         console.log('DB creada');
         DB = crearDB.result;
 
@@ -175,7 +183,7 @@ export function crearDB() {
     }
 
     //Definir el schema
-    crearDB.onupgradeneeded = function(e) {
+    crearDB.onupgradeneeded = function (e) {
         const db = e.target.result;
 
         const objectStore = db.createObjectStore('citas', {
@@ -194,5 +202,5 @@ export function crearDB() {
 
         console.log('DB Creada y lista');
     }
-    
+
 }
