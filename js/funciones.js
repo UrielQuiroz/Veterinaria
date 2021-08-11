@@ -19,7 +19,7 @@ import {
 const ui = new UI();
 const administrarCitas = new Citas();
 let editando;
-let DB;
+export let DB;
 
 //Objeto con la informacion de la cita
 const citaObj = {
@@ -89,7 +89,7 @@ export function nuevaCita(e) {
     //Resetear el formulario
     frm.reset();
 
-    ui.imprimirCitas(administrarCitas);
+    ui.imprimirCitas();
 }
 
 
@@ -112,7 +112,7 @@ export function eliminarCita(id) {
     ui.imprimirAlerta('La cita se eliminó correctamente');
 
     //Refrescar las citas
-    ui.imprimirCitas(administrarCitas);
+    ui.imprimirCitas();
 }
 
 export function cargarEdicion(cita) {
@@ -156,6 +156,9 @@ export function crearDB() {
     crearDB.onsuccess = function() {
         console.log('DB creada');
         DB = crearDB.result;
+
+        //Mostrar citas al cargar (Pero index db ya esat listo)
+        ui.imprimirCitas();
     }
 
     //Definir el schema
